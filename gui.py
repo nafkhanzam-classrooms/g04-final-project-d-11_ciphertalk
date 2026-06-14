@@ -308,7 +308,7 @@ class CipherTalkClientGUI:
         self.chat_area.see(tk.END)
         self.chat_area.config(state=tk.DISABLED)
         
-    def update_char_count(self):
+    def update_char_count(self, event=None):
         count = len(self.msg_entry.get())
         self.char_label.config(text=f"{count}/100")
 
