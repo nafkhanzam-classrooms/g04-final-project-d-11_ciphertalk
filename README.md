@@ -131,7 +131,100 @@ menghapus user dari online list dan menutup koneksi
 menulis log
 
 ### handle_client()
+Fungsi ini dapat dibagi menjadi dua fase, yaitu sebelum dan sesuda user ter-autentikasi
+- fase 1 
+```
+if command == "login":
+    ...
+    if not re.match(r"^\d{10}$", input_nrp):
+      ...
+    elif any(info["nrp"] == input_nrp for info in clients.values()):
+      ...
+    elif input_nrp in locked_accounts:
+      ...
+```
+melakukan validasi format nrp dan memastikan nrp tersebut belum login dan masih memiliki kesempatan untuk meminta kode nrp untuk waktu itu
+```
+    else:
+        otp = str(secrets.randbelow(900000) + 100000)
+        pending_logins[input_nrp] = {
+            "otp_hash": hashlib.sha256(otp.encode()).hexdigest(),
+            "expires_at": datetime.now() + timedelta(minutes=5),
+            "attempts": 0
+        }
+
+        email = f"{input_nrp}@student.its.ac.id"
+        # TODO: kirim OTP ke email its
+        print(f"[OTP DEBUG] OTP untuk {email}: {otp}")
+        ...
+```
+men-generate OTP untuk login
+```
+elif command == "verify_otp":
+    ...
+    if input_nrp not in pending_logins:
+        ...
+    else:
+        ...
+        if datetime.now() > record["expires_at"]:
+            ...
+        elif record["attempts"] >= 5:
+            ...
+        elif hashlib.sha256(input_otp.encode()).hexdigest() != record["otp_hash"]:
+            ...
+        else:
+            ...
+```
+memverifikasi apakah OTP masih berlaku, belum melewati batas percobaan, dan sesuai dengan yang dibuat/dikirim server
+
+- fase 2
+```
+if command == "broadcast":
+  ...
+elif command == "create":
+  ...
+elif command == "join":
+  ...
+elif command == "whisper":
+  ...
+elif command == "leave":
+  ...
+elif command == "list":
+  ...
+elif command == "online":
+  ...
+```
+handling fitur-fitur yang dapat digunakan user saat terkoneksi dan terautentikasi
+
 ### start_server()
+```
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+```
+koneksi menggunakan TCP dengan IPv4
+```
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+```
+jika server di restart, maka port yang sama dapat dipakai kembali tanpa menunggu expired
+```
+server.bind((HOST, PORT))
+server.listen()
+print(f"[START] Server CipherTalk aktif mendengarkan di {HOST}:{PORT}")
+logging.info(f"Server CipherTalk diaktifkan pada {HOST}:{PORT}")
+```
+server akan mendengarkan pesan masuk dari HOST=localhost dan PORT=7002
+```
+while True:
+    client_socket, client_address = server.accept()
+    print(f"[CONNECTION] Koneksi fisik masuk dari {client_address}")
+    thread = threading.Thread(target=handle_client, args=(client_socket,))
+    ...
+    thread.start()
+```
+mengalokasikan 1 thread untuk setiap 1 koneksi user dan 
+```
+    thread.daemon = True
+```
+memastikan worker thread akan mati apabila proses utama server mati 
 
 ## gui.py
 
