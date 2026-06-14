@@ -11,6 +11,127 @@
 ## [Link Demo](https://drive.google.com/file/d/1TLTMeEb8boF2cVXbT1GEc15iXC7foJet/view?usp=sharing)
 
 ## server.py
+  Kode `server.py` berguna untuk meneruskan pesan (broadcast & whisper), menyimpan list forum & histori broadcast, membuat & memverifikasi kode OTP, dan menerapkan
+  mekanisme anti-spam (limit karakter, limit bubble chat, limit pembuatan forum). Untuk mengimplementasikan hal-hal tadi, `server.py` memiliki berbagai _function_ yaitu :
+### load_database()
+```
+db_lock = threading.Lock() #global
+with db_lock:
+```
+berguna untuk memastikan hanya 1 thread yang mengakses database
+```
+    if os.path.exists(DB_FILE):
+        try:
+            with open(DB_FILE, 'r') as f:
+                data = json.load(f)
+```
+akan membuka file dalam mode read dan melakukan konversi datanya ke dalam dictionary python
+```            
+            limit_date = datetime.now() - timedelta(days=7)
+            cleaned_rooms = {}
+            
+            for room_name, chat_history in data.get("rooms", {}).items():
+                valid_chats = []
+                for chat in chat_history:
+                    # Cek timestamp tiap chat
+                    chat_time = datetime.strptime(chat['timestamp'], '%Y-%m-%d %H:%M:%S')
+                    if chat_time > limit_date:
+                        valid_chats.append(chat)
+                cleaned_rooms[room_name] = valid_chats
+            
+            return {"rooms": cleaned_rooms}
+```
+akan mengecek chat yang masih belum lewat `limit_date` dan menyimpannya ke dalam `valid_chat`
+
+### save_database()
+```
+with db_lock:
+```
+berguna untuk memastikan hanya 1 thread yang mengakses database dalam 1 waktu, sehingga tidak ada race condition dengan load_database
+```
+    try:
+        with open(DB_FILE, 'w') as f:
+            json.dump(data_to_save, f, indent=4)
+```
+akan membuka file dalam mode read dan melakukan konversi dictionary python ke JSON
+
+### generate_alias()
+```
+FIRST = ["Melon", "Jeruk", "Apel", "Mangga", "Anggur", "Nanas", "Pepaya", "Berry", "Semangka", "Kiwi", "Durian", "Sirsak", "Lemon", "Ceri", "Alpukat", "Jambu"]
+STRINGS = string.ascii_uppercase + string.digits
+...
+    alias = f"{random.choice(FIRST)}{random.choice(STRINGS)}{random.choice(STRINGS)}{random.choice(STRINGS)}"
+```
+mengkonstruksikan format alias, yaitu nama buah + 3 karakter alfanumerik
+```
+while True:
+    ...
+    if all(info["alias"] != alias for info in clients.values()):
+        return alias
+```
+mengiterasikan alias generation hingga nilainya unik/tidak sama dengan user lain
+
+### broadcast_to_room()
+```
+packet = (json.dumps(message_dict) + "\n").encode('utf-8')
+```
+melakukan encoding pesan dalam dictionary ke dalam JSON dengan `\n` sebagai delimiter
+```
+for client_socket in rooms_sockets.get(room_name, []):
+    if client_socket != sender_socket:
+        try:
+            client_socket.sendall(packet)
+```
+akan mencari ruangan forum yang sesuai dan mengirim paket tersebut ke semua user di dalam forum kecuali kepada pengirim pesan
+```
+        except Exception as e:
+            print(f"Broadcast error: {e}")
+            handle_disconnect(client_socket)
+```
+untuk menghandle apabila suatu user tidak dapat menerima pesan. Server akan menganggap terdapat masalah pada koneksi user
+dan melakukan diskoneksi
+
+### handle_disconnect()
+```
+if client_socket in clients:
+    user_info = clients[client_socket]
+    alias = user_info["alias"]
+    nrp = user_info["nrp"]
+    room = user_info["current_room"]
+```
+untuk memastikan user yang ingin diputus koneksinya benar-benar masih terhubung
+``` 
+    if room in rooms_sockets and client_socket in rooms_sockets[room]:
+        rooms_sockets[room].remove(client_socket)
+```
+untuk menghapus user tersebut dari daftar user di suatu ruangan
+```
+    exit_notification = {
+        "status": "info",
+        "sender_alias": "SISTEM",
+        "timestamp": "INFO",
+        "message": f"Pengguna [{alias}] telah keluar dari forum."
+    }
+    broadcast_to_room(room, client_socket, exit_notification)
+```
+memberi notifikasi ke user lain di ruangan bahwa user tersebut keluar
+```
+    del clients[client_socket]
+    try:
+        client_socket.close()
+    except:
+        pass
+```
+menghapus user dari online list dan menutup koneksi
+```
+    log_msg = f"NRP {nrp} ({alias}) terputus dari jaringan."
+    print(f"[DISCONNECT] {log_msg}")
+    logging.info(log_msg)
+```
+menulis log
+
+### handle_client()
+### start_server()
 
 ## gui.py
 
