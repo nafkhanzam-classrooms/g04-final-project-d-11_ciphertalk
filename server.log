@@ -91,3 +91,10 @@
 2026-06-12 13:43:28 - [SERVER_LOG] - NRP 5025241021 (Apel4KX) terputus dari jaringan.
 2026-06-14 12:06:59 - [SERVER_LOG] - Server CipherTalk diaktifkan pada 127.0.0.1:7002
 2026-06-14 12:16:08 - [SERVER_LOG] - Server CipherTalk diaktifkan pada 127.0.0.1:7002
+2026-06-14 15:42:15 - [SERVER_LOG] - Server CipherTalk diaktifkan pada 127.0.0.1:7002
+2026-06-14 15:42:53 - [SERVER_LOG] - NRP 1234567890 sukses login menggunakan identitas samaran NanasY43.
+2026-06-14 15:43:11 - [SERVER_LOG] - NRP 0987654321 sukses login menggunakan identitas samaran JambuONR.
+2026-06-14 15:45:12 - [SERVER_LOG] - NRP 0987654321 (JambuONR) terputus dari jaringan.
+2026-06-14 15:45:14 - [SERVER_LOG] - NRP 1234567890 (NanasY43) terputus dari jaringan.
+2026-06-14 15:50:26 - [SERVER_LOG] - NRP 0987654321 sukses login menggunakan identitas samaran Ceri96I.
+2026-06-14 15:51:53 - [SERVER_LOG] - NRP 0987654321 (Ceri96I) terputus dari jaringan.

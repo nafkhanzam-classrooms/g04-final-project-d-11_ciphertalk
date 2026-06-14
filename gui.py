@@ -97,6 +97,11 @@ class CipherTalkClientGUI:
         self.msg_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5))
         self.msg_entry.bind("<Return>", lambda event: self.send_broadcast())
         
+        self.msg_entry.bind("<KeyRelease>", self.update_char_count)
+
+        self.char_label = tk.Label(bottom_frame, text="0/100", fg="gray")
+        self.char_label.pack(side=tk.RIGHT, padx=5)
+
         self.send_btn = tk.Button(bottom_frame, text="Kirim Chat", font=("Arial", 10, "bold"),
                         bg="#28a745", fg="white", width=12, command=self.send_broadcast)
         self.send_btn.pack(side=tk.RIGHT)
@@ -148,6 +153,13 @@ class CipherTalkClientGUI:
         if target_user and target_user.strip():
             message_body = simpledialog.askstring("Isi Pesan", f"Masukkan pesan rahasia untuk {target_user.strip()}:", parent=self.root)
             if message_body and message_body.strip():
+                if len(message_body.strip()) > 100:
+                    messagebox.showwarning(
+                        "Pesan Terlalu Panjang",
+                        "Whisper maksimal 100 karakter."
+                    )
+                    return
+            
                 self.send_action_packet({
                     "command": "whisper", 
                     "target": target_user.strip(), 
@@ -263,12 +275,19 @@ class CipherTalkClientGUI:
         user_input = self.msg_entry.get().strip()
         if not user_input:
             return
-            
+
+        if len(user_input) > 100:
+            messagebox.showwarning(
+                "Pesan Terlalu Panjang",
+                "Pesan maksimal 100 karakter."
+            )
+            return
+        
         packet = {
             "command": "broadcast",
             "payload": user_input
         }
-        
+    
         timestamp = datetime.now().strftime("%H:%M:%S")
         self.append_chat(f"Anda ({timestamp})", user_input)
         
@@ -288,9 +307,19 @@ class CipherTalkClientGUI:
         self.chat_area.insert(tk.END, f"[{sender}]: {message}\n")
         self.chat_area.see(tk.END)
         self.chat_area.config(state=tk.DISABLED)
+        
+    def update_char_count(self):
+        count = len(self.msg_entry.get())
+        self.char_label.config(text=f"{count}/100")
 
+        if count > 100:
+            self.char_label.config(fg="red")
+        else:
+            self.char_label.config(fg="gray")
+        
     def insert_emoji(self, emoji):
         self.msg_entry.insert(tk.INSERT, emoji)
+        self.update_char_count()
         self.msg_entry.focus_set()
         
 if __name__ == "__main__":
