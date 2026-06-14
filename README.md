@@ -164,9 +164,9 @@ Proses masuk jaringan dibagi menjadi dua tahap sekuensial yang aman:
 
 Setelah otorisasi sukses, layar obrolan dibangun menggunakan konfigurasi tata letak grid (`columnconfigure`) yang membagi area menjadi dua segmen utama:
 
-* **Sisi Kiri (Area Komunikasi):** Mengintegrasikan komponen `scrolledtext.ScrolledText` yang dikunci dalam mode `tk.DISABLED` agar riwayat chat bersifat *read-only* dan tidak dapat dimodifikasi secara tidak sengaja oleh pengguna. Kunci dibuka sementara hanya lewat fungsi `append_chat()` saat ada string data pesan baru masuk.
+* **Sisi Kiri (Area Komunikasi):** Mengintegrasikan komponen *scrolled-text* yang dikunci dalam mode `tk.DISABLED` agar riwayat chat bersifat *read-only* dan tidak dapat dimodifikasi secara tidak sengaja oleh pengguna. Kunci dibuka sementara hanya lewat fungsi `append_chat()` saat ada string data pesan baru masuk.
 * **Sisi Kanan (Panel Kontrol Grafis):**
-Bertindak sebagai abstraksi perintah teks soket. Setiap tombol mengikat fungsi `send_action_packet()` atau memicu dialog pop-up (`simpledialog.askstring`) untuk membungkus perintah ke dalam skema JSON terstruktur sebelum dilempar ke jaringan:
+Bertindak sebagai abstraksi perintah teks soket. Setiap tombol mengikat fungsi `send_action_packet()` atau memicu dialog pop-up untuk membungkus perintah ke dalam skema JSON terstruktur sebelum dilempar ke jaringan:
 * **Daftar Forum**: `{"command": "list"}`
 * **Buat Forum**: `{"command": "create", "payload": "<nama_room>"}`
 * **Masuk Forum**: `{"command": "join", "payload": "<nama_room>"}`
@@ -185,14 +185,14 @@ threading.Thread(target=self.listen_from_server, daemon=True).start()
 
 ```
 
-Properti `daemon=True` menjamin bahwa ketika jendela aplikasi GUI utama ditutup oleh pengguna, *thread* latar belakang ini akan langsung ikut mati secara otomatis, mencegah terjadinya proses menggantung (*zombie process*) di sistem operasi.
+Properti `daemon=True` menjamin bahwa ketika jendela aplikasi GUI utama ditutup oleh pengguna, *thread* latar belakang ini akan langsung ikut mati secara otomatis, mencegah terjadinya proses menggantung di sistem operasi.
 
 * Worker thread ini berjalan di dalam perulangan `while self.is_running:` untuk terus menangkap data streaming dari jaringan.
-* Karena TCP bersifat *stream-based*, fungsi ini memanfaatkan mekanisme penyangga `buffer` string untuk menampung serpihan paket data. Pemisahan paket dilakukan secara akurat berbasis pemisah baris baru (`\n`) sebelum diurai kembali menjadi kamus data objek via `json.loads(line)`.
-* Jika koneksi ke server terputus mendadak, *catch block* akan menangkap kegagalan tersebut dan mengarahkan antarmuka untuk memicu fungsi `disable_inputs()`, yang bertugas mengunci kolom entri dan tombol kirim agar pengguna tidak dapat mengirimkan pesan hantu (*ghost messages*).
+* Karena TCP bersifat *stream-based*, fungsi ini memanfaatkan mekanisme penyangga buffer string untuk menampung serpihan paket data. Pemisahan paket dilakukan secara akurat berbasis pemisah baris baru (`\n`) sebelum diurai kembali menjadi kamus data objek via `json.loads(line)`.
+* Jika koneksi ke server terputus mendadak, *catch block* akan menangkap kegagalan tersebut dan mengarahkan antarmuka untuk memicu fungsi `disable_inputs()`, yang bertugas mengunci kolom entri dan tombol kirim agar pengguna tidak dapat mengirimkan pesan kosong (pesan hantu).
 
 
 ### Detail Interaktivitas & Aksesibilitas UI
 
-* **Live Character Counter**: Fungsi ini terikat dengan aksi pengetikan di keyboard (`<KeyRelease>`). Jika panjang teks di dalam komponen `msg_entry` melewati ambang 100 karakter, label indikator akan otomatis berubah warna menjadi merah (`fg="red"`) sebagai pembatas visual (*constraint warning*) bagi pengguna.
+* **Live Character Counter**: Fungsi ini terikat dengan aksi pengetikan di keyboard (<KeyRelease>). Jika panjang teks melewati ambang 100 karakter, label indikator akan otomatis berubah warna menjadi merah sebagai pembatas visual bagi pengguna.
 * **Emoji Insertion Control**: Ketika salah satu tombol emoji ditekan, fungsi ini akan menyisipkan karakter Unicode emoji ke titik kursor aktif saat ini berada (`tk.INSERT`), memperbarui jumlah karakter secara real-time, dan mengembalikan fokus pengetikan kembali ke kolom teks utama (`self.msg_entry.focus_set()`) agar alur mengetik pengguna tidak terputus.
