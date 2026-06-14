@@ -1,0 +1,131 @@
+{
+    "rooms": {
+        "Lobby": [
+            {
+                "sender": "Semangka1FF",
+                "message": "/list",
+                "timestamp": "2026-06-12 12:01:41"
+            },
+            {
+                "sender": "Semangka1FF",
+                "message": "haloo?",
+                "timestamp": "2026-06-12 12:01:45"
+            },
+            {
+                "sender": "BerryOPQ",
+                "message": "hsjdsajha",
+                "timestamp": "2026-06-12 12:02:36"
+            }
+        ],
+        "test": [
+            {
+                "sender": "Warga_Informatika_36",
+                "message": "test",
+                "timestamp": "2026-06-08 17:05:12"
+            },
+            {
+                "sender": "Warga_Informatika_36",
+                "message": "etnsj",
+                "timestamp": "2026-06-08 17:05:15"
+            },
+            {
+                "sender": "Mahasiswa_Progjar_50",
+                "message": "halo",
+                "timestamp": "2026-06-09 07:57:08"
+            },
+            {
+                "sender": "Mahasiswa_StresFP_75",
+                "message": "testsssss",
+                "timestamp": "2026-06-09 07:57:50"
+            },
+            {
+                "sender": "Maba_Informatika_45",
+                "message": "kdjdj",
+                "timestamp": "2026-06-09 07:58:06"
+            },
+            {
+                "sender": "KiwiM3F",
+                "message": "HALOOOO",
+                "timestamp": "2026-06-12 11:45:34"
+            },
+            {
+                "sender": "JambuEBR",
+                "message": "tessttt",
+                "timestamp": "2026-06-12 11:46:44"
+            },
+            {
+                "sender": "JambuEBR",
+                "message": "halo",
+                "timestamp": "2026-06-12 11:46:48"
+            },
+            {
+                "sender": "JambuEBR",
+                "message": "halo",
+                "timestamp": "2026-06-12 11:46:49"
+            },
+            {
+                "sender": "JambuEBR",
+                "message": "najhwu",
+                "timestamp": "2026-06-12 11:46:50"
+            },
+            {
+                "sender": "JambuEBR",
+                "message": "dbnuhd",
+                "timestamp": "2026-06-12 11:46:51"
+            },
+            {
+                "sender": "JambuEBR",
+                "message": "bheu",
+                "timestamp": "2026-06-12 11:46:52"
+            },
+            {
+                "sender": "JambuEBR",
+                "message": "ndeufhe",
+                "timestamp": "2026-06-12 11:46:54"
+            },
+            {
+                "sender": "JambuEBR",
+                "message": "fjefuheuf",
+                "timestamp": "2026-06-12 11:46:55"
+            },
+            {
+                "sender": "JambuEBR",
+                "message": "fneufh",
+                "timestamp": "2026-06-12 11:46:56"
+            },
+            {
+                "sender": "JambuEBR",
+                "message": "fnehfe",
+                "timestamp": "2026-06-12 11:46:58"
+            },
+            {
+                "sender": "JambuEBR",
+                "message": "feehfe",
+                "timestamp": "2026-06-12 11:46:59"
+            },
+            {
+                "sender": "JambuEBR",
+                "message": "jefuhe",
+                "timestamp": "2026-06-12 11:47:00"
+            },
+            {
+                "sender": "JambuEBR",
+                "message": "ejnfiehf",
+                "timestamp": "2026-06-12 11:47:01"
+            }
+        ],
+        "aha1": [],
+        "aha2": [],
+        "aha3": [],
+        "aha4": [],
+        "test1": [],
+        "test2": [],
+        "apaya": [
+            {
+                "sender": "JambuL2R",
+                "message": "eh ini apaan sik",
+                "timestamp": "2026-06-12 12:12:06"
+            }
+        ]
+    }
+}
